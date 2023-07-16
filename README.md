@@ -10,7 +10,7 @@
 ```xml
 <dependencies>
     <dependency>
-        <groupId>org.zhdev</groupId>
+        <groupId>org.zhdev.varioutil</groupId>
         <artifactId>all</artifactId>
         <version>1.0-SNAPSHOT</version>
     </dependency>
@@ -22,7 +22,7 @@
 ```xml
 <dependencies>
     <dependency>
-        <groupId>org.zhdev</groupId>
+        <groupId>org.zhdev.varioutil</groupId>
         <artifactId>common</artifactId>
         <version>1.0-SNAPSHOT</version>
     </dependency>
@@ -32,6 +32,7 @@
 ```java
 import java.lang.reflect.Field;
 
+import org.zhdev.util.ReflectionUtils;
 import org.bukkit.Bukkit;
 
 public class BukkitFields {
@@ -52,7 +53,7 @@ public class BukkitFields {
 ```xml
 <dependencies>
     <dependency>
-        <groupId>org.zhdev</groupId>
+        <groupId>org.zhdev.varioutil</groupId>
         <artifactId>io</artifactId>
         <version>1.0-SNAPSHOT</version>
     </dependency>
