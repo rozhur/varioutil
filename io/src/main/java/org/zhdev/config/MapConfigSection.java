@@ -6,7 +6,7 @@ import java.util.function.Function;
 public class MapConfigSection implements ConfigSection {
     protected final LinkedHashMap<String, ConfigSectionNode> map;
 
-    protected MapConfigSection(LinkedHashMap<String, ConfigSectionNode> map) {;
+    protected MapConfigSection(LinkedHashMap<String, ConfigSectionNode> map) {
         this.map = map;
     }
 
@@ -397,6 +397,47 @@ public class MapConfigSection implements ConfigSection {
         return object;
     }
 
+    @Override
+    public Boolean getBoolean(String key) {
+        Object object = get(key);
+        if (object instanceof Boolean) {
+            return (Boolean) object;
+        }
+        return object == null ? null : Boolean.getBoolean(object.toString());
+    }
+
+    @Override
+    public Boolean getBoolean(String key, Boolean fallback) {
+        Boolean object = getBoolean(key);
+        return object == null ? fallback : object;
+    }
+
+    @Override
+    public Boolean getBoolean(String key, Function<String, Boolean> fallback) {
+        Boolean object = getBoolean(key);
+        return object == null ? fallback.apply(key) : object;
+    }
+
+    @Override
+    public Boolean getOrSetBoolean(String key, Boolean fallback, String... blockComments) {
+        Boolean object = getBoolean(key);
+        if (object == null) {
+            map.put(key, new ConfigSectionNode(fallback, blockComments));
+            return fallback;
+        }
+        return object;
+    }
+
+    @Override
+    public Boolean getOrSetBoolean(String key, Function<String, Boolean> fallback, String... blockComments) {
+        Boolean object = getBoolean(key);
+        if (object == null) {
+            object = fallback.apply(key);
+            map.put(key, new ConfigSectionNode(object, blockComments));
+        }
+        return object;
+    }
+
     public List<?> getList(String key) {
         Object object = get(key);
         return object instanceof List ? (List<?>) object : null;
@@ -456,6 +497,10 @@ public class MapConfigSection implements ConfigSection {
     @SuppressWarnings("unchecked")
     public <T> T remove(String key) {
         return (T) map.remove(key);
+    }
+
+    public int size() {
+        return map.size();
     }
 
     public void clear() {

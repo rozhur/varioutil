@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.function.Function;
 
 public interface ConfigSection extends Iterable<String> {
+    int size();
+
     String[] getBlockComments(String key);
 
     String[] getInlineComments(String key);
@@ -102,6 +104,16 @@ public interface ConfigSection extends Iterable<String> {
     String getOrSetString(String key, String fallback, String... blockComments);
 
     String getOrSetString(String key, Function<String, String> fallback, String... blockComments);
+
+    Boolean getBoolean(String key);
+
+    Boolean getBoolean(String key, Boolean fallback);
+
+    Boolean getBoolean(String key, Function<String, Boolean> fallback);
+
+    Boolean getOrSetBoolean(String key, Boolean fallback, String... blockComments);
+
+    Boolean getOrSetBoolean(String key, Function<String, Boolean> fallback, String... blockComments);
 
     List<?> getList(String key);
 
