@@ -7,6 +7,7 @@ import org.yaml.snakeyaml.nodes.Node;
 import org.zhdev.util.ResourceUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -56,8 +57,13 @@ public class BukkitYamlConfig extends YamlConfig implements BukkitConfig {
         File file = load(plugin.getDataFolder().getPath() + File.separatorChar + path);
         if (file.length() == 0) {
             ResourceUtils.saveResource(path, file, classLoader);
+            try {
+                load(file);
+            } catch (IOException e) {
+                throw new ConfigException(e);
+            }
         }
-        return load(plugin.getDataFolder().getPath() + File.separatorChar + path);
+        return file;
     }
 
     @Override
