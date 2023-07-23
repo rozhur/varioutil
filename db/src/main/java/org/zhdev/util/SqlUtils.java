@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.sql.*;
 
 public class SqlUtils {
+    public static final char[] ESCAPE_CHARS = {'%', '_', '[', ']', '^'};
+
     public static Connection createMySqlConnection(String address, String dbname, String username, String password, boolean ssl) throws SqlException {
         try {
             try {
@@ -82,5 +84,21 @@ public class SqlUtils {
                     return function.apply(set);
                 }
         }, query, args);
+    }
+
+    public static String escape(String str) {
+        return StringUtils.escape(str, ESCAPE_CHARS);
+    }
+
+    public static String unescape(String str) {
+        return StringUtils.unescape(str, ESCAPE_CHARS);
+    }
+
+    public static String escape(String str, String escape) {
+        return StringUtils.escape(str, escape, ESCAPE_CHARS);
+    }
+
+    public static String unescape(String str, String escape) {
+        return StringUtils.unescape(str, escape, ESCAPE_CHARS);
     }
 }
