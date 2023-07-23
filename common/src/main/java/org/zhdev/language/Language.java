@@ -3,6 +3,7 @@ package org.zhdev.language;
 import org.zhdev.util.StringUtils;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Language {
@@ -15,7 +16,19 @@ public class Language {
         }
 
         String phrase = section.getOrDefault(phraseKey, phraseKey);
-        return phrase == null ? sectionKey + ':' + phraseKey : StringUtils.replaceKeyValue(phrase, params);
+        if (phrase == null) {
+            Map<String, Object> paramsMap = new LinkedHashMap<>(params.length / 2);
+            Object replacement = null;
+            for (int i = 0; i < params.length; i++) {
+                if (i % 2 == 0) {
+                    replacement = params[i];
+                } else {
+                    paramsMap.put(String.valueOf(params[i]), replacement);
+                }
+            }
+            return sectionKey + ':' + phraseKey + ' ' + paramsMap;
+        }
+        return StringUtils.replaceKeyValue(phrase, params);
     }
 
     public String addPhrase(String sectionKey, String phraseKey, String phrase) {
