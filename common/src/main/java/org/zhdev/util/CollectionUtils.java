@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.IntFunction;
+import java.util.function.Supplier;
 
 public class CollectionUtils {
     public static <T> T get(List<T> list, int index) {
@@ -15,9 +16,9 @@ public class CollectionUtils {
         return t == null ? fallback : t;
     }
 
-    public static <T> T get(List<T> list, int index, Function<List<T>, T> fallbackFunction) {
+    public static <T> T get(List<T> list, int index, Supplier<T> fallbackFunction) {
         T t = get(list, index);
-        return t == null ? fallbackFunction.apply(list) : t;
+        return t == null ? fallbackFunction.get() : t;
     }
 
     public static  <C extends Collection<R>, T, R> C map(Collection<T> collection, IntFunction<C> collectionConstructor, Function<T, R> function) {

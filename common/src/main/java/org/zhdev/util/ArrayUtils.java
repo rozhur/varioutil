@@ -3,6 +3,7 @@ package org.zhdev.util;
 import java.util.Collection;
 import java.util.function.Function;
 import java.util.function.IntFunction;
+import java.util.function.Supplier;
 
 public class ArrayUtils {
     public static <T> T get(T[] array, int index) {
@@ -14,9 +15,9 @@ public class ArrayUtils {
         return t == null ? fallback : t;
     }
 
-    public static <T> T get(T[] array, int index, Function<T[], T> fallbackFunction) {
+    public static <T> T get(T[] array, int index, Supplier<T> fallbackFunction) {
         T t = get(array, index);
-        return t == null ? fallbackFunction.apply(array) : t;
+        return t == null ? fallbackFunction.get() : t;
     }
 
     public static <T, R> R[] map(T[] array, IntFunction<R[]> arrayConstructor, Function<T, R> function) {
