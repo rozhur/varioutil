@@ -128,11 +128,9 @@ public class StringUtils {
 
     public static String escape(String str, String escape, char... chars) {
         StringBuilder builder = new StringBuilder(str);
-
         for (char c : chars) {
             replace(builder, String.valueOf(c), escape + c);
         }
-
         return builder.toString();
     }
 
@@ -142,11 +140,9 @@ public class StringUtils {
 
     public static String unescape(String str, String escape, char... chars) {
         StringBuilder builder = new StringBuilder(str);
-
         for (char c : chars) {
             replace(builder, escape + c, c);
         }
-
         return builder.toString();
     }
 
