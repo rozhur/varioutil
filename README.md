@@ -3,7 +3,7 @@
 <repositories>
     <repository>
         <id>zhdev-repo</id>
-        <url>https://repo.zhdev.org/maven</url>
+        <url>https://maven.zhdev.org/repository/</url>
     </repository>
 </repositories>
 ```
