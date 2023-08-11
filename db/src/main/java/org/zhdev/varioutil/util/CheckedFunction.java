@@ -1,4 +1,4 @@
-package org.zhdev.util;
+package org.zhdev.varioutil.util;
 
 @FunctionalInterface
 public interface CheckedFunction<T, R, E extends Exception> {

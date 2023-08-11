@@ -1,11 +1,8 @@
-package org.zhdev.util;
+package org.zhdev.varioutil.util;
 
-import org.zhdev.config.ConfigSection;
-import org.zhdev.language.Language;
-import org.zhdev.sql.H2SqlConnection;
-import org.zhdev.sql.MySqlConnection;
-import org.zhdev.sql.SqlConnection;
-import org.zhdev.sql.SqliteConnection;
+import org.zhdev.varioutil.config.ConfigSection;
+import org.zhdev.varioutil.language.Language;
+import org.zhdev.varioutil.sql.*;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -31,34 +28,39 @@ public class ConfigUtils {
         addPhrases(language, config, s -> s);
     }
 
-    public static SqlConnection createSqlConnection(ConfigSection config, String pathPrefix) {
-        String type = config.getString("type", "none").toLowerCase();
-        SqlConnection connection;
-        switch (type) {
+    public static ConnectionProvider createSqlConnectionProvider(ConfigSection config, String pathPrefix) {
+        String type = config.getString("type", "none");
+        ConnectionProvider provider;
+        switch (type.toLowerCase()) {
+            case "sqlite": {
+                String path = config.getString("path", "storage.db");
+                provider = new SqliteProvider(pathPrefix + File.separatorChar + path);
+                break;
+            }
             case "h2": {
                 String path = config.getString("path", "storage.h2");
                 String username = config.getString("username");
                 String password = config.getString("password");
-                connection = new H2SqlConnection(File.separatorChar + path, username, password);
+                provider = new H2Provider(pathPrefix + File.separatorChar + path, username, password);
                 break;
             }
             case "mysql": {
                 String address = config.getString("address", "127.0.0.1");
-                pathPrefix = new File(pathPrefix).getAbsoluteFile().getName().replace(File.separator, "_").toLowerCase();
-                String dbname = config.getString("dbname", System.getProperty("user.home") + '_' + pathPrefix);
+                String dbname = config.getString("dbname", System.getProperty("user.home"));
                 String username = config.getString("username", System.getProperty("user.home"));
                 String password = config.getString("password");
                 boolean ssl = config.getBoolean("ssl", false);
-                connection = new MySqlConnection(address, dbname, username, password, ssl);
+                provider = new MysqlProvider(address, dbname, username, password, ssl);
                 break;
             }
-            case "sqlite": {
-                String path = config.getString("path", "database.db");
-                connection = new SqliteConnection(pathPrefix + File.separatorChar + path);
+            case "none": {
+                provider = ConnectionProvider.NOT_ESTABLISHED;
                 break;
             }
-            default: case "none": connection = SqlConnection.NOT_ESTABLISHED;
+            default: {
+                throw new SqlException("Unknown database driver: " + type);
+            }
         }
-        return connection;
+        return provider;
     }
 }

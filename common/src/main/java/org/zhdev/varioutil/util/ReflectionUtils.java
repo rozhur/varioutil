@@ -1,7 +1,7 @@
-package org.zhdev.util;
+package org.zhdev.varioutil.util;
 
-import org.zhdev.reflection.FieldSearcher;
-import org.zhdev.reflection.MethodSearcher;
+import org.zhdev.varioutil.reflection.FieldSearcher;
+import org.zhdev.varioutil.reflection.MethodSearcher;
 
 import java.io.File;
 import java.io.IOException;

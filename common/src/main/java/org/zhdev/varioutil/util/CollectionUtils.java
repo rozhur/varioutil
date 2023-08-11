@@ -1,4 +1,4 @@
-package org.zhdev.util;
+package org.zhdev.varioutil.util;
 
 import java.util.Collection;
 import java.util.List;
@@ -34,27 +34,27 @@ public class CollectionUtils {
     }
 
     public static <C extends Collection<Byte>, T> C mapToByte(Collection<T> collection, IntFunction<C> collectionConstructor) {
-        return map(collection, collectionConstructor, NumberUtils::parseByte);
+        return map(collection, collectionConstructor, StringUtils::parseByte);
     }
 
     public static <C extends Collection<Short>, T> C mapToShort(Collection<T> collection, IntFunction<C> collectionConstructor) {
-        return map(collection, collectionConstructor, NumberUtils::parseShort);
+        return map(collection, collectionConstructor, StringUtils::parseShort);
     }
 
     public static <C extends Collection<Integer>, T> C mapToInteger(Collection<T> collection, IntFunction<C> collectionConstructor) {
-        return map(collection, collectionConstructor, NumberUtils::parseInt);
+        return map(collection, collectionConstructor, StringUtils::parseInt);
     }
 
     public static <C extends Collection<Long>, T> C mapToLong(Collection<T> collection, IntFunction<C> collectionConstructor) {
-        return map(collection, collectionConstructor, NumberUtils::parseLong);
+        return map(collection, collectionConstructor, StringUtils::parseLong);
     }
 
     public static <C extends Collection<Float>, T> C mapToFloat(Collection<T> collection, IntFunction<C> collectionConstructor) {
-        return map(collection, collectionConstructor, NumberUtils::parseFloat);
+        return map(collection, collectionConstructor, StringUtils::parseFloat);
     }
 
     public static <C extends Collection<Double>, T> C mapToDouble(Collection<T> collection, IntFunction<C> collectionConstructor) {
-        return map(collection, collectionConstructor, NumberUtils::parseDouble);
+        return map(collection, collectionConstructor, StringUtils::parseDouble);
     }
     
     public static <T, R> R[] mapAndToArray(Collection<T> collection, IntFunction<R[]> arrayConstructor, Function<T, R> function) {

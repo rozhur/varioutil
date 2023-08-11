@@ -1,4 +1,4 @@
-package org.zhdev.util;
+package org.zhdev.varioutil.util;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -8,10 +8,12 @@ public class StringUtils {
     public static String join(int beginIndex, int lastIndex, String delimiter, String lastDelimiter, String... elements) {
         StringBuilder builder = new StringBuilder();
         for (; beginIndex < elements.length; beginIndex++) {
-            if (beginIndex == lastIndex) {
-                builder.append(lastDelimiter);
-            } else {
-                builder.append(delimiter);
+            if (builder.length() > 0) {
+                if (beginIndex == lastIndex) {
+                    builder.append(lastDelimiter);
+                } else {
+                    builder.append(delimiter);
+                }
             }
             builder.append(elements[beginIndex]);
         }
@@ -261,5 +263,157 @@ public class StringUtils {
         char[] chars = str.toCharArray();
         chars[0] = Character.toUpperCase(chars[0]);
         return new String(chars);
+    }
+
+    public static boolean isDigit(String input) {
+        for (int i = 0; i < input.length(); i++){
+            if (!Character.isDigit(input.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static byte parseByte(String str, byte def) {
+        try {
+            return Byte.parseByte(str);
+        } catch (NumberFormatException e) {
+            return def;
+        }
+    }
+
+    public static short parseShort(String str, short def) {
+        try {
+            return Short.parseShort(str);
+        } catch (NumberFormatException e) {
+            return def;
+        }
+    }
+
+    public static int parseInt(String str, int def) {
+        try {
+            return Integer.parseInt(str);
+        } catch (NumberFormatException e) {
+            return def;
+        }
+    }
+
+    public static long parseLong(String str, long def) {
+        try {
+            return Long.parseLong(str);
+        } catch (NumberFormatException e) {
+            return def;
+        }
+    }
+
+    public static double parseFloat(String str, float def) {
+        try {
+            return Float.parseFloat(str);
+        } catch (NumberFormatException e) {
+            return def;
+        }
+    }
+
+    public static double parseDouble(String str, double def) {
+        try {
+            return Double.parseDouble(str);
+        } catch (NumberFormatException e) {
+            return def;
+        }
+    }
+
+    public static Byte parseByte(Object obj, Byte def) {
+        try {
+            return Byte.parseByte(String.valueOf(obj));
+        } catch (NumberFormatException e) {
+            return def;
+        }
+    }
+
+    public static Byte parseByte(Object obj) {
+        return parseByte(obj, null);
+    }
+
+    public static Short parseShort(Object obj, Short def) {
+        try {
+            return Short.parseShort(String.valueOf(obj));
+        } catch (NumberFormatException e) {
+            return def;
+        }
+    }
+
+    public static Short parseShort(Object obj) {
+        return parseShort(obj, null);
+    }
+
+    public static Integer parseInt(Object obj, Integer def) {
+        try {
+            return Integer.parseInt(String.valueOf(obj));
+        } catch (NumberFormatException e) {
+            return def;
+        }
+    }
+
+    public static Integer parseInt(Object obj) {
+        return parseInt(obj, null);
+    }
+
+    public static Long parseLong(Object obj, Long def) {
+        try {
+            return Long.parseLong(String.valueOf(obj));
+        } catch (NumberFormatException e) {
+            return def;
+        }
+    }
+
+    public static Long parseLong(Object obj) {
+        return parseLong(obj, null);
+    }
+
+    public static Float parseFloat(Object obj, Float def) {
+        try {
+            return Float.parseFloat(String.valueOf(obj));
+        } catch (NumberFormatException e) {
+            return def;
+        }
+    }
+
+    public static Float parseFloat(Object obj) {
+        return parseFloat(obj, null);
+    }
+
+    public static Double parseDouble(Object obj, Double def) {
+        try {
+            return Double.parseDouble(String.valueOf(obj));
+        } catch (NumberFormatException e) {
+            return def;
+        }
+    }
+
+    public static Double parseDouble(Object obj) {
+        return parseDouble(obj, null);
+    }
+
+    public static String inflect(long value, String var1, String var2, String var3, String var4) {
+        if (value == 0) {
+            return var4;
+        }
+
+        long r1;
+        if (value % 10 == 0 || (value / 10) % 10 == 1 || (r1 = value % 10) > 4) {
+            return var3;
+        } else if (r1 != 1) {
+            return var2;
+        } else {
+            return var1;
+        }
+    }
+
+    public static String inflect(long value, String var1, String var2, String var3) {
+        return inflect(value, var1, var2, var3, var3);
+    }
+
+    public static String inflect(long value, String var1, String var2) {
+        return inflect(value, var1, var2, var2);
     }
 }

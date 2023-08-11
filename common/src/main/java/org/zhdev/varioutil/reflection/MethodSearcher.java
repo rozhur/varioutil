@@ -1,6 +1,6 @@
-package org.zhdev.reflection;
+package org.zhdev.varioutil.reflection;
 
-import org.zhdev.util.ReflectionUtils;
+import org.zhdev.varioutil.util.ReflectionUtils;
 
 import java.lang.reflect.Method;
 

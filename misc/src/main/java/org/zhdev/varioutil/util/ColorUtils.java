@@ -1,4 +1,4 @@
-package org.zhdev.util;
+package org.zhdev.varioutil.util;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

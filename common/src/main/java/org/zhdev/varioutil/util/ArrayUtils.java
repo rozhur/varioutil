@@ -1,4 +1,4 @@
-package org.zhdev.util;
+package org.zhdev.varioutil.util;
 
 import java.util.Collection;
 import java.util.function.Function;
@@ -33,27 +33,27 @@ public class ArrayUtils {
     }
 
     public static <T> Byte[] mapToByte(T[] array, IntFunction<Byte[]> arrayConstructor) {
-        return map(array, arrayConstructor, NumberUtils::parseByte);
+        return map(array, arrayConstructor, StringUtils::parseByte);
     }
 
     public static <T> Short[] mapToShort(T[] array, IntFunction<Short[]> arrayConstructor) {
-        return map(array, arrayConstructor, NumberUtils::parseShort);
+        return map(array, arrayConstructor, StringUtils::parseShort);
     }
 
     public static <T> Integer[] mapToInteger(T[] array, IntFunction<Integer[]> arrayConstructor) {
-        return map(array, arrayConstructor, NumberUtils::parseInt);
+        return map(array, arrayConstructor, StringUtils::parseInt);
     }
 
     public static <T> Long[] mapToLong(T[] array, IntFunction<Long[]> arrayConstructor) {
-        return map(array, arrayConstructor, NumberUtils::parseLong);
+        return map(array, arrayConstructor, StringUtils::parseLong);
     }
 
     public static <T> Float[] mapToFloat(T[] array, IntFunction<Float[]> arrayConstructor) {
-        return map(array, arrayConstructor, NumberUtils::parseFloat);
+        return map(array, arrayConstructor, StringUtils::parseFloat);
     }
 
     public static <T> Double[] mapToDouble(T[] array, IntFunction<Double[]> arrayConstructor) {
-        return map(array, arrayConstructor, NumberUtils::parseDouble);
+        return map(array, arrayConstructor, StringUtils::parseDouble);
     }
 
     public static <C extends Collection<R>, T, R> C mapAndToCollection(T[] array, IntFunction<C> collectionConstructor, Function<T, R> function) {

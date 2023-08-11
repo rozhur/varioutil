@@ -1,9 +1,10 @@
-package org.zhdev.util;
+package org.zhdev.varioutil.util;
 
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class ResourceUtils {
     public static InputStream getResource(String path, ClassLoader loader) {
@@ -25,7 +26,7 @@ public class ResourceUtils {
         return getResource(path, ResourceUtils.class.getClassLoader());
     }
 
-    public static boolean saveResource(String resourcePath, File outFile, ClassLoader loader) throws IllegalStateException {
+    public static boolean saveResource(String resourcePath, Path outPath, ClassLoader loader) throws IllegalStateException {
         if (resourcePath == null || resourcePath.equals("")) {
             return false;
         }
@@ -36,14 +37,14 @@ public class ResourceUtils {
             return false;
         }
 
-        File parent = outFile.getParentFile();
-        if (parent != null && !parent.exists()) {
-            parent.mkdirs();
-        }
-
         try {
-            if (!outFile.exists() || outFile.length() == 0) {
-                OutputStream stream = Files.newOutputStream(outFile.toPath());
+            Path parent = outPath.getParent();
+            if (parent != null && Files.notExists(parent)) {
+                Files.createDirectories(parent);
+            }
+
+            if (Files.notExists(outPath) || Files.size(outPath) == 0) {
+                OutputStream stream = Files.newOutputStream(outPath);
                 byte[] buf = new byte[1024];
                 int len;
                 while ((len = in.read(buf)) > 0) {
@@ -54,14 +55,14 @@ public class ResourceUtils {
                 return true;
             }
         } catch (IOException e) {
-            throw new IllegalStateException("Could not save resource " + resourcePath + " to " + outFile, e);
+            throw new IllegalStateException("Could not save resource " + resourcePath + " to " + outPath, e);
         }
 
         return false;
     }
 
 
-    public static boolean saveResource(String resourcePath, File outFile) throws IllegalStateException {
-        return saveResource(resourcePath, outFile);
+    public static boolean saveResource(String resourcePath, Path outPath) throws IllegalStateException {
+        return saveResource(resourcePath, outPath, ResourceUtils.class.getClassLoader());
     }
 }

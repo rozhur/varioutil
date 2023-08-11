@@ -1,4 +1,4 @@
-package org.zhdev.config;
+package org.zhdev.varioutil.config;
 
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.LoaderOptions;
@@ -8,25 +8,24 @@ import org.yaml.snakeyaml.comments.CommentType;
 import org.yaml.snakeyaml.nodes.*;
 import org.yaml.snakeyaml.parser.ParserException;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
+import java.io.Reader;
+import java.io.Writer;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class YamlConfig extends MapConfigSection implements Config {
+    protected static final String DEFAULT_KEY = "config.yml";
+
     protected static final YamlConfigConstructor CONSTRUCTOR;
     protected static final YamlConfigRepresenter REPRESENTER;
     protected static final Yaml YAML;
 
     protected final String key;
 
-    protected String[] headerComments;
-    protected String[] endComments;
-
     public YamlConfig(String key) {
-        super(null);
+        super();
         this.key = key;
     }
 
@@ -39,26 +38,6 @@ public class YamlConfig extends MapConfigSection implements Config {
         return key;
     }
 
-    @Override
-    public String[] getHeaderComments() {
-        return headerComments;
-    }
-
-    @Override
-    public String[] getEndComments() {
-        return endComments;
-    }
-
-    @Override
-    public void setHeaderComments(String... headerComments) {
-        this.headerComments = headerComments;
-    }
-
-    @Override
-    public void setEndComments(String... endComments) {
-        this.endComments = endComments;
-    }
-
     private String[] createComments(List<CommentLine> lines) {
         String[] comments = new String[lines.size()];
         for (int i = 0; i < lines.size(); i++) {
@@ -68,9 +47,23 @@ public class YamlConfig extends MapConfigSection implements Config {
         return comments;
     }
 
-    protected Object constructHandle(Node keyNode, Node valueNode, String key, Object value) {
+    private List<CommentLine> createCommentLines(String[] comments, CommentType commentType) {
+        List<CommentLine> lines = new ArrayList<>(comments.length);
+        for (String comment : comments) {
+            lines.add(new CommentLine(null, null, comment.isEmpty() ? comment : " " + comment, commentType));
+        }
+        return lines;
+    }
+
+    protected Object constructHandle(MapConfigSection section, Node keyNode, Node valueNode, String key, Object value) {
         if (valueNode instanceof MappingNode) {
-            MapConfigSection childSection = new MapConfigSection();
+            MapConfigSection childSection;
+            ConfigSectionNode oldNode = section.map.get(key);
+            if (oldNode == null || !(oldNode.value instanceof MapConfigSection)) {
+                childSection = new MapConfigSection();
+            } else {
+                childSection = (MapConfigSection) oldNode.value;
+            }
             nodesToSections(childSection, (MappingNode) valueNode);
             value = childSection;
         }
@@ -82,10 +75,12 @@ public class YamlConfig extends MapConfigSection implements Config {
         for (NodeTuple tuple : node.getValue()) {
             Node keyNode = tuple.getKeyNode();
             Node valueNode = tuple.getValueNode();
+
             String key = String.valueOf(CONSTRUCTOR.constructObject(keyNode));
-            Object value = constructHandle(keyNode, valueNode, key, CONSTRUCTOR.constructObject(valueNode));
+            Object value = constructHandle(section, keyNode, valueNode, key, CONSTRUCTOR.constructObject(valueNode));
 
             ConfigSectionNode sectionNode = new ConfigSectionNode(value);
+
             if (keyNode.getBlockComments() != null && keyNode.getBlockComments().size() > 0) {
                 sectionNode.blockComments = createComments(keyNode.getBlockComments());
             }
@@ -103,12 +98,6 @@ public class YamlConfig extends MapConfigSection implements Config {
         try {
             MappingNode node = (MappingNode) YAML.compose(reader);
             if (node == null) return;
-            if (node.getBlockComments() != null && node.getBlockComments().size() > 0) {
-                headerComments = createComments(node.getBlockComments());
-            }
-            if (node.getEndComments() != null && node.getEndComments().size() > 0) {
-                endComments = createComments(node.getEndComments());
-            }
             nodesToSections(this, node);
         } catch (ParserException e) {
             throw new ConfigException(e);
@@ -116,37 +105,8 @@ public class YamlConfig extends MapConfigSection implements Config {
     }
 
     @Override
-    public void load(InputStream stream) {
-        load(new InputStreamReader(stream, StandardCharsets.UTF_8));
-    }
-
-    @Override
-    public void load(File file) throws IOException, ConfigException {
-        load(Files.newInputStream(file.toPath()));
-    }
-
-    @Override
-    public File load(String path) throws ConfigException {
-        File file = new File(path);
-        try {
-            if (file.exists()) load(file);
-        } catch (IOException e) {
-            throw new ConfigException(e);
-        }
-        return file;
-    }
-
-    @Override
-    public File load() throws ConfigException {
+    public Path load() throws ConfigException {
         return load(key);
-    }
-
-    private List<CommentLine> createCommentLines(String[] comments, CommentType commentType) {
-        List<CommentLine> lines = new ArrayList<>(comments.length);
-        for (String comment : comments) {
-            lines.add(new CommentLine(null, null, comment.isEmpty() ? comment : " " + comment, commentType));
-        }
-        return lines;
     }
 
     protected Node representHandle(String key, Object value) {
@@ -181,60 +141,16 @@ public class YamlConfig extends MapConfigSection implements Config {
     @Override
     public void save(Writer writer) {
         MappingNode node = sectionsToNodes(this);
-        node.setBlockComments(headerComments == null ? null : createCommentLines(headerComments, CommentType.BLOCK));
-        node.setEndComments(endComments == null ? null : createCommentLines(endComments, CommentType.BLOCK));
         YAML.serialize(node, writer);
     }
 
     @Override
-    public void save(OutputStream stream) {
-        save(new OutputStreamWriter(stream, StandardCharsets.UTF_8));
-    }
-
-    @Override
-    public void save(File file) throws IOException {
-        save(Files.newOutputStream(file.toPath()));
-    }
-
-    @Override
-    public File save(String path) throws ConfigException {
-        File file = new File(path);
-        if (!file.exists()) {
-            File parent = file.getParentFile();
-            if (parent != null) parent.mkdirs();
-            try {
-                file.createNewFile();
-                save(file);
-            } catch (IOException e) {
-                throw new ConfigException(e);
-            }
-        }
-        return file;
-    }
-
-    @Override
-    public File save() throws ConfigException {
+    public Path save() throws ConfigException {
         return save(key);
     }
 
     @Override
-    public File saveIfEmpty(String path) throws ConfigException {
-        File file = new File(path);
-        if (file.length() == 0) {
-            File parent = file.getParentFile();
-            if (parent != null) parent.mkdirs();
-            try {
-                file.createNewFile();
-                save(file);
-            } catch (IOException e) {
-                throw new ConfigException(e);
-            }
-        }
-        return file;
-    }
-
-    @Override
-    public File saveIfEmpty() throws ConfigException {
+    public Path saveIfEmpty() throws ConfigException {
         return saveIfEmpty(key);
     }
 
@@ -254,5 +170,10 @@ public class YamlConfig extends MapConfigSection implements Config {
         REPRESENTER = representer;
 
         YAML = new Yaml(CONSTRUCTOR = new YamlConfigConstructor(loaderOptions), representer, dumperOptions, loaderOptions);
+    }
+
+    @Override
+    public String toString() {
+        return key;
     }
 }

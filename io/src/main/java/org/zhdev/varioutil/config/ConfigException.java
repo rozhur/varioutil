@@ -1,4 +1,4 @@
-package org.zhdev.config;
+package org.zhdev.varioutil.config;
 
 public class ConfigException extends RuntimeException {
     public ConfigException() {

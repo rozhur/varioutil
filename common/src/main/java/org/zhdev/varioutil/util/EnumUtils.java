@@ -1,4 +1,4 @@
-package org.zhdev.util;
+package org.zhdev.varioutil.util;
 
 public class EnumUtils {
     private static <T extends Enum<T>> T[] getValues(T eNum) {

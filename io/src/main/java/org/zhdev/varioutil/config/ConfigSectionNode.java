@@ -1,6 +1,6 @@
-package org.zhdev.config;
+package org.zhdev.varioutil.config;
 
-class ConfigSectionNode {
+final class ConfigSectionNode {
     Object value;
     String[] blockComments;
     String[] inlineComments;

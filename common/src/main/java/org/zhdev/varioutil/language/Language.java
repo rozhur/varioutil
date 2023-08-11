@@ -1,6 +1,6 @@
-package org.zhdev.language;
+package org.zhdev.varioutil.language;
 
-import org.zhdev.util.StringUtils;
+import org.zhdev.varioutil.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -15,7 +15,7 @@ public class Language {
             return sectionKey + ':' + phraseKey;
         }
 
-        String phrase = section.getOrDefault(phraseKey, phraseKey);
+        String phrase = section.get(phraseKey);
         if (phrase == null) {
             Map<String, Object> paramsMap = new LinkedHashMap<>(params.length / 2);
             Object replacement = null;
@@ -23,7 +23,7 @@ public class Language {
                 if (i % 2 == 0) {
                     replacement = params[i];
                 } else {
-                    paramsMap.put(String.valueOf(params[i]), replacement);
+                    paramsMap.put(String.valueOf(replacement), params[i]);
                 }
             }
             return sectionKey + ':' + phraseKey + ' ' + paramsMap;

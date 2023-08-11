@@ -1,25 +1,39 @@
-package org.zhdev;
+package org.zhdev.varioutil;
 
 import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.JavaPluginLoader;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+
 public abstract class BukkitPlugin extends JavaPlugin {
-    public void registerCommand(String label, CommandExecutor executor, TabCompleter completer) {
+    public BukkitPlugin() {
+        super();
+    }
+
+    protected BukkitPlugin(@NotNull JavaPluginLoader loader, @NotNull PluginDescriptionFile description, @NotNull File dataFolder, @NotNull File file) {
+        super(loader, description, dataFolder, file);
+    }
+
+    public Command registerCommand(CommandExecutor executor, TabCompleter completer, String label) {
         PluginCommand command = Bukkit.getPluginCommand(label);
         if (command != null) {
             command.setExecutor(executor);
             command.setTabCompleter(completer);
         }
+        return command;
     }
 
-    public void registerCommand(String label, CommandExecutor executor) {
-        registerCommand(label, executor, this);
+    public Command registerCommand(CommandExecutor executor, String label) {
+        return registerCommand(executor, executor instanceof TabCompleter ? (TabCompleter) executor : this, label);
     }
 
     public void registerEvents(Listener listener) {

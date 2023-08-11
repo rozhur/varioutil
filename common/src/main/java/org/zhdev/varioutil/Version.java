@@ -1,4 +1,4 @@
-package org.zhdev;
+package org.zhdev.varioutil;
 
 import org.jetbrains.annotations.NotNull;
 

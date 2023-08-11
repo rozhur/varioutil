@@ -1,4 +1,4 @@
-package org.zhdev.config;
+package org.zhdev.varioutil.config;
 
 import java.util.*;
 import java.util.function.Function;
