@@ -32,7 +32,7 @@
 ```java
 import java.lang.reflect.Field;
 
-import org.zhdev.util.ReflectionUtils;
+import org.zhdev.varioutil.ReflectionUtils;
 import org.bukkit.Bukkit;
 
 public class BukkitFields {
@@ -62,8 +62,8 @@ public class BukkitFields {
 #### Code
 
 ```java
-import org.zhdev.config.Config;
-import org.zhdev.config.YamlConfig;
+import org.zhdev.varioutil.Config;
+import org.zhdev.varioutil.YamlConfig;
 
 import java.util.List;
 
