@@ -2,6 +2,7 @@ package org.zhdev.varioutil;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.PluginIdentifiableCommand;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
@@ -171,6 +172,8 @@ public abstract class BukkitPreparedPlugin extends BukkitPlugin implements Liste
         if (singleThreadExecutor != null) {
             singleThreadExecutor.shutdownNow();
         }
+
+        BukkitUtils.unregisterCommandIf(command -> command instanceof PluginIdentifiableCommand && ((PluginIdentifiableCommand) command).getPlugin() == this);
     }
 
     @Override

@@ -36,12 +36,20 @@ public class BukkitUtils {
         COMMAND_MAP.register(label, fallbackPrefix, command);
     }
 
-    public static void unregisterCommand(String label) {
-        KNOWN_COMMANDS.remove(label);
+    public static Command unregisterCommand(String label) {
+        Command command = KNOWN_COMMANDS.remove(label);
+        if (command != null) command.unregister(COMMAND_MAP);
+        return command;
     }
 
     public static void unregisterCommandIf(Predicate<Command> predicate) {
-        KNOWN_COMMANDS.values().removeIf(predicate);
+        KNOWN_COMMANDS.values().removeIf(command -> {
+            if (predicate.test(command)) {
+                command.unregister(COMMAND_MAP);
+                return true;
+            }
+            return false;
+        });
     }
 
     public static void setSkullTexture(SkullMeta meta, String base64) {
