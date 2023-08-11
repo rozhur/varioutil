@@ -16,8 +16,9 @@
         <module>common</module>
         <module>io</module>
         <module>db</module>
-        <module>bukkit</module>
         <module>misc</module>
+        <module>bukkit</module>
+        <module>velocity</module>
         <module>all</module>
     </modules>
 
@@ -108,7 +109,7 @@
                 <artifactId>maven-deploy-plugin</artifactId>
                 <version>2.7</version>
                 <configuration>
-                    <altDeploymentRepository>local::default::file:${user.home}/repo/maven/</altDeploymentRepository>
+                    <altDeploymentRepository>local::default::file:${project.basedir}/target/deploy</altDeploymentRepository>
                 </configuration>
                 <executions>
                     <execution>
