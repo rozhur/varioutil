@@ -1,4 +1,4 @@
-package org.zhdev.sql;
+package org.zhdev.varioutil.sql;
 
 public class SqlException extends RuntimeException {
     public SqlException() {

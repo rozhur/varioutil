@@ -1,35 +1,34 @@
-package org.zhdev.util;
+package org.zhdev.varioutil.util;
 
-import org.zhdev.sql.SqlException;
+import org.zhdev.varioutil.sql.SqlException;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.*;
 
 public class SqlUtils {
     public static final char[] ESCAPE_CHARS = {'%', '_', '[', ']', '^'};
 
-    public static Connection createMySqlConnection(String address, String dbname, String username, String password, boolean ssl) throws SqlException {
+    private static boolean sqlite;
+    private static boolean h2;
+    private static boolean mysql;
+
+    public static Connection createMysqlConnection(String address, String dbname, String username, String password, boolean ssl) throws SqlException {
         try {
-            try {
-                Class.forName("com.mysql.cj.jdbc.Driver");
-            } catch (ClassNotFoundException e) {
-                Class.forName("com.mysql.jdbc.Driver");
-            }
             if (!address.contains(":")) {
                 address = address + ":3306";
             }
             return DriverManager.getConnection("jdbc:mysql://" + address + '/' + dbname + "?useSSL=" + ssl, username, password);
         } catch (SQLException e) {
             throw new SqlException(e);
-        } catch (ClassNotFoundException e) {
-            throw new SqlException("No suitable driver");
         }
     }
 
     public static Connection createH2Connection(String path, String username, String password) throws SqlException {
         try {
-            Class.forName("org.h2.Driver");
+            DriverManager.registerDriver(new org.h2.Driver());
             Connection connection;
             if (username != null) {
                 connection = DriverManager.getConnection("jdbc:h2:./" + path + ";mode=MySQL;AUTO_SERVER=TRUE", username, password);
@@ -37,29 +36,29 @@ public class SqlUtils {
                 connection = DriverManager.getConnection("jdbc:h2:./" + path + ";mode=MySQL;AUTO_SERVER=TRUE", "sa", "");
             }
             return connection;
-        } catch (ClassNotFoundException e) {
+        } catch (NoClassDefFoundError e) {
             throw new SqlException("No suitable driver");
         } catch (SQLException e) {
             throw new SqlException(e);
         }
     }
 
-    public static Connection createSqliteConnection(String path) throws SqlException {
-        File file = new File(path);
-        if (!file.exists()) {
-            File parent = file.getParentFile();
-            if (parent != null) {
-                parent.mkdirs();
-            }
+    public static Connection createSqliteConnection(String pathname) throws SqlException {
+        Path path = Paths.get(pathname);
+        if (!Files.exists(path)) {
+            Path parent = path.getParent();
             try {
-                file.createNewFile();
+                if (parent != null) {
+                    Files.createDirectories(parent);
+                }
+                Files.createFile(path);
             } catch (IOException e) {
                 throw new SqlException(e);
             }
         }
         try {
             Class.forName("org.sqlite.JDBC");
-            return DriverManager.getConnection("jdbc:sqlite:" + file);
+            return DriverManager.getConnection("jdbc:sqlite:" + path);
         } catch (ClassNotFoundException e) {
             throw new SqlException("No suitable driver");
         } catch (SQLException e) {
@@ -100,5 +99,50 @@ public class SqlUtils {
 
     public static String unescape(String str, String escape) {
         return StringUtils.unescape(str, escape, ESCAPE_CHARS);
+    }
+
+    private static void initializeH2() {
+        if (h2) {
+            return;
+        }
+
+        try {
+            DriverManager.registerDriver(new org.h2.Driver());
+        } catch (NoClassDefFoundError | SQLException ignored) {}
+
+        h2 = true;
+    }
+
+    private static void initializeMySql() {
+        if (mysql) {
+            return;
+        }
+
+        try {
+            try {
+                DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());
+            } catch (NoClassDefFoundError e) {
+                DriverManager.registerDriver(new com.mysql.jdbc.Driver());
+            }
+        } catch (NoClassDefFoundError | SQLException ignored) {}
+
+        mysql = true;
+    }
+
+    private static void initializeSqlite() {
+        if (sqlite) {
+            return;
+        }
+
+        try {
+            DriverManager.registerDriver(new org.sqlite.JDBC());
+        } catch (NoClassDefFoundError | SQLException ignored) {}
+
+        sqlite = true;
+    }
+
+    static {
+        initializeH2();
+        initializeMySql();
     }
 }
