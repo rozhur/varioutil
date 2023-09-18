@@ -199,7 +199,7 @@ public class StringUtils {
             previous = c;
         }
 
-        list.add(builder.toString());
+        if (builder.length() > 0) list.add(builder.toString());
 
         return list.toArray(new String[0]);
     }
@@ -306,7 +306,7 @@ public class StringUtils {
         }
     }
 
-    public static double parseFloat(String str, float def) {
+    public static float parseFloat(String str, float def) {
         try {
             return Float.parseFloat(str);
         } catch (NumberFormatException e) {
