@@ -5,8 +5,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.plugin.Plugin;
 
 public class GuiListener implements Listener {
@@ -17,7 +21,14 @@ public class GuiListener implements Listener {
     }
 
     @EventHandler
-    public void onClick(InventoryClickEvent event) {
+    private void onDrag(InventoryDragEvent event) {
+        if (event.getInventory().getHolder() instanceof GuiHolder) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    private void onClick(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player)) {
             return;
         }
@@ -48,7 +59,23 @@ public class GuiListener implements Listener {
     }
 
     @EventHandler
-    public void onPluginDisable(PluginDisableEvent event) {
+    private void onOpen(InventoryOpenEvent event) {
+        InventoryHolder holder = event.getInventory().getHolder();
+        if (holder instanceof GuiHolder) {
+            ((GuiHolder) holder).gui.getOpenEvent().accept(event);
+        }
+    }
+
+    @EventHandler
+    private void onClose(InventoryCloseEvent event) {
+        InventoryHolder holder = event.getInventory().getHolder();
+        if (holder instanceof GuiHolder) {
+            ((GuiHolder) holder).gui.getCloseEvent().accept(event);
+        }
+    }
+
+    @EventHandler
+    private void onPluginDisable(PluginDisableEvent event) {
         if (event.getPlugin() == plugin) {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 Inventory inventory = player.getOpenInventory().getTopInventory();

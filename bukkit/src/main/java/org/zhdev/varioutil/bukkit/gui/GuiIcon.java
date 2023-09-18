@@ -106,7 +106,7 @@ public class GuiIcon {
             if (meta != null) {
                 meta.setDisplayName(displayName);
                 meta.setLore(lore);
-                meta.addItemFlags(flags);
+                if (flags != null) meta.addItemFlags(flags);
                 if (texture != null && meta instanceof SkullMeta) {
                     BukkitUtils.setSkullTexture(((SkullMeta) meta), texture);
                 }

@@ -22,9 +22,6 @@ public abstract class VelocityPreparedPlugin extends VelocityPlugin implements P
 
     protected VelocityPreparedPlugin(ProxyServer server, Logger logger, Path dataFolder) {
         super(server, logger, dataFolder);
-        loadConfig(defaultConfig);
-        loadPhrases();
-        establishSqlConnection();
     }
 
     protected SqlAdapter createSqlAdapter() {
@@ -68,6 +65,9 @@ public abstract class VelocityPreparedPlugin extends VelocityPlugin implements P
 
     @Subscribe
     private void onProxyInitialization(ProxyInitializeEvent event) {
+        loadConfig(defaultConfig);
+        loadPhrases();
+        establishSqlConnection();
         onEnabling();
     }
 

@@ -62,7 +62,7 @@ public class BukkitUtils {
         BukkitReflectionUtils.setProfile(meta, profile);
     }
 
-    public static String stacksToString(ItemStack[] contents) {
+    public static String stacksToString(ItemStack... contents) {
         try (ByteArrayOutputStream str = new ByteArrayOutputStream();
              BukkitObjectOutputStream data = new BukkitObjectOutputStream(str)) {
             data.writeInt(contents.length);

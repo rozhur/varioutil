@@ -28,7 +28,6 @@ public class SqlUtils {
 
     public static Connection createH2Connection(String path, String username, String password) throws SqlException {
         try {
-            DriverManager.registerDriver(new org.h2.Driver());
             Connection connection;
             if (username != null) {
                 connection = DriverManager.getConnection("jdbc:h2:./" + path + ";mode=MySQL;AUTO_SERVER=TRUE", username, password);
@@ -57,10 +56,7 @@ public class SqlUtils {
             }
         }
         try {
-            Class.forName("org.sqlite.JDBC");
             return DriverManager.getConnection("jdbc:sqlite:" + path);
-        } catch (ClassNotFoundException e) {
-            throw new SqlException("No suitable driver");
         } catch (SQLException e) {
             throw new SqlException(e);
         }
@@ -144,5 +140,6 @@ public class SqlUtils {
     static {
         initializeH2();
         initializeMySql();
+        initializeSqlite();
     }
 }

@@ -24,7 +24,11 @@ public abstract class VelocityPlugin {
         return dataFolder;
     }
 
-    public Logger getLogger() {
+    public java.util.logging.Logger getLogger() {
+        return java.util.logging.Logger.getLogger(logger.getName());
+    }
+
+    public Logger getSLF4JLogger() {
         return logger;
     }
 }

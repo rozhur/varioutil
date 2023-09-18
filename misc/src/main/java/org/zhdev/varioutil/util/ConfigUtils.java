@@ -7,6 +7,7 @@ import org.zhdev.varioutil.sql.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.function.Function;
 
 public class ConfigUtils {
@@ -15,9 +16,12 @@ public class ConfigUtils {
             ConfigSection section = config.getSection(i);
             if (section == null) continue;
             for (String j : section) {
-                String phrase = section.getString(j);
-                if (phrase == null) {
-                    phrase = String.join("\n", CollectionUtils.mapToString(section.getList(j, Collections.emptyList()), ArrayList::new));
+                String phrase;
+                List<?> list = section.getList(j);
+                if (list == null) {
+                    phrase = section.getString(j);
+                } else {
+                    phrase = String.join("\n", CollectionUtils.mapToString(list, ArrayList::new));
                 }
                 language.addPhrase(i, j, function.apply(phrase));
             }
