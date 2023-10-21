@@ -2,8 +2,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>parent</artifactId>
         <groupId>org.zhdev.varioutil</groupId>
+        <artifactId>parent</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
@@ -30,6 +30,10 @@
                 <exclusion>
                     <groupId>com.mysql</groupId>
                     <artifactId>mysql-connector-j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.googlecode.json-simple</groupId>
+                    <artifactId>json-simple</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
