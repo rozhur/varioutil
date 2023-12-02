@@ -12,11 +12,19 @@ public interface Config extends ConfigSection {
     void load(Reader reader);
 
     default void load(InputStream stream) {
-        load(new InputStreamReader(stream, StandardCharsets.UTF_8));
+        InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
+        load(reader);
+        try {
+            reader.close();
+        } catch (IOException e) {
+            throw new ConfigException(e);
+        }
     }
 
     default void load(Path path) throws IOException, ConfigException {
-        load(Files.newInputStream(path));
+        try (InputStream stream = Files.newInputStream(path)) {
+            load(stream);
+        }
     }
 
     default void load(File file) throws IOException, ConfigException {
