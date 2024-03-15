@@ -50,8 +50,8 @@ public class ConfigUtils {
             }
             case "mysql": {
                 String address = config.getString("address", "127.0.0.1");
-                String dbname = config.getString("dbname", System.getProperty("user.home"));
-                String username = config.getString("username", System.getProperty("user.home"));
+                String dbname = config.getString("dbname", System.getProperty("user.name"));
+                String username = config.getString("username", System.getProperty("user.name"));
                 String password = config.getString("password");
                 boolean ssl = config.getBoolean("ssl", false);
                 provider = new MysqlProvider(address, dbname, username, password, ssl);
