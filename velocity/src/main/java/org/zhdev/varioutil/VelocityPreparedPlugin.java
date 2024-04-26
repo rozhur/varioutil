@@ -32,9 +32,9 @@ public abstract class VelocityPreparedPlugin extends VelocityPlugin implements P
         ConfigSection languageSection = defaultConfig.getOrCreateSection("language");
         String locale = languageSection.getString("locale", "default");
         Config languageConfig = new VelocityTomlConfig("language/" + locale + ".toml");
-        loadConfig(languageConfig, "language.toml");
-        loadConfig(languageConfig, "language/default.toml");
-        loadConfig(languageConfig);
+        loadConfig(languageConfig, "language.toml", true);
+        loadConfig(languageConfig, "language/default.toml", true);
+        loadConfig(languageConfig, true);
         ConfigUtils.addPhrases(language, languageConfig, ColorUtils::translateAlternateColorCodes);
     }
 

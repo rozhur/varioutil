@@ -13,6 +13,7 @@ import org.zhdev.varioutil.bukkit.command.PreparedPluginCommand;
 import org.zhdev.varioutil.config.BukkitYamlConfig;
 import org.zhdev.varioutil.config.Config;
 import org.zhdev.varioutil.config.ConfigSection;
+import org.zhdev.varioutil.config.YamlConfig;
 import org.zhdev.varioutil.language.Language;
 import org.zhdev.varioutil.sql.SqlAdapter;
 import org.zhdev.varioutil.util.BukkitUtils;
@@ -124,10 +125,10 @@ public abstract class BukkitPreparedPlugin extends BukkitPlugin implements Liste
     protected void loadPhrases() {
         ConfigSection languageSection = defaultConfig.getOrCreateSection("language");
         String locale = languageSection.getString("locale", "default");
-        Config languageConfig = new BukkitYamlConfig("language/" + locale + ".yml");
-        loadConfig(languageConfig, "language.yml");
-        loadConfig(languageConfig, "language/default.yml");
-        loadConfig(languageConfig);
+        Config languageConfig = new YamlConfig("language/" + locale + ".yml");
+        loadConfig(languageConfig, "language.yml", true);
+        loadConfig(languageConfig, "language/default.yml", true);
+        loadConfig(languageConfig, true);
         ConfigUtils.addPhrases(language, languageConfig, ColorUtils::translateAlternateColorCodes);
     }
 

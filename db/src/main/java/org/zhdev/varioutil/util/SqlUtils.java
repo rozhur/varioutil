@@ -3,6 +3,9 @@ package org.zhdev.varioutil.util;
 import org.zhdev.varioutil.sql.SqlException;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,13 +18,17 @@ public class SqlUtils {
     private static boolean h2;
     private static boolean mysql;
 
+    private static String encodeUrlValue(String value) throws UnsupportedEncodingException {
+        return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
+    }
+
     public static Connection createMysqlConnection(String address, String dbname, String username, String password, boolean ssl) throws SqlException {
         try {
             if (!address.contains(":")) {
                 address = address + ":3306";
             }
-            return DriverManager.getConnection("jdbc:mysql://" + address + '/' + dbname + "?useSSL=" + ssl, username, password);
-        } catch (SQLException e) {
+            return DriverManager.getConnection("jdbc:mysql://" + encodeUrlValue(address) + '/' + encodeUrlValue(dbname) + "?useSSL=" + ssl, username, password);
+        } catch (SQLException | UnsupportedEncodingException e) {
             throw new SqlException(e);
         }
     }
@@ -30,14 +37,14 @@ public class SqlUtils {
         try {
             Connection connection;
             if (username != null) {
-                connection = DriverManager.getConnection("jdbc:h2:./" + path + ";mode=MySQL;AUTO_SERVER=TRUE", username, password);
+                connection = DriverManager.getConnection("jdbc:h2:./" + encodeUrlValue(path) + ";mode=MySQL;AUTO_SERVER=TRUE", username, password);
             } else {
-                connection = DriverManager.getConnection("jdbc:h2:./" + path + ";mode=MySQL;AUTO_SERVER=TRUE", "sa", "");
+                connection = DriverManager.getConnection("jdbc:h2:./" + encodeUrlValue(path) + ";mode=MySQL;AUTO_SERVER=TRUE", "sa", "");
             }
             return connection;
         } catch (NoClassDefFoundError e) {
             throw new SqlException("No suitable driver");
-        } catch (SQLException e) {
+        } catch (SQLException | UnsupportedEncodingException e) {
             throw new SqlException(e);
         }
     }
@@ -56,8 +63,8 @@ public class SqlUtils {
             }
         }
         try {
-            return DriverManager.getConnection("jdbc:sqlite:" + path);
-        } catch (SQLException e) {
+            return DriverManager.getConnection("jdbc:sqlite:" + encodeUrlValue(path.toString()));
+        } catch (SQLException | UnsupportedEncodingException e) {
             throw new SqlException(e);
         }
     }

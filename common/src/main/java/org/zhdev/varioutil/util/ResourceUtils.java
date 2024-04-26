@@ -26,41 +26,44 @@ public class ResourceUtils {
         return getResource(path, ResourceUtils.class.getClassLoader());
     }
 
-    public static boolean saveResource(String resourcePath, Path outPath, ClassLoader loader) throws IllegalStateException {
-        if (resourcePath == null || resourcePath.equals("")) {
-            return false;
+    public static boolean saveResource(InputStream inputStream, Path outPath) throws IOException {
+        Path parent = outPath.getParent();
+        if (parent != null && Files.notExists(parent)) {
+            Files.createDirectories(parent);
         }
 
-        resourcePath = resourcePath.replace('\\', '/');
-        InputStream in = getResource(resourcePath, loader);
-        if (in == null) {
-            return false;
-        }
-
-        try {
-            Path parent = outPath.getParent();
-            if (parent != null && Files.notExists(parent)) {
-                Files.createDirectories(parent);
+        if (Files.notExists(outPath) || Files.size(outPath) == 0) {
+            OutputStream outputStream = Files.newOutputStream(outPath);
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = inputStream.read(buf)) > 0) {
+                outputStream.write(buf, 0, len);
             }
-
-            if (Files.notExists(outPath) || Files.size(outPath) == 0) {
-                OutputStream stream = Files.newOutputStream(outPath);
-                byte[] buf = new byte[1024];
-                int len;
-                while ((len = in.read(buf)) > 0) {
-                    stream.write(buf, 0, len);
-                }
-                stream.close();
-                in.close();
-                return true;
-            }
-        } catch (IOException e) {
-            throw new IllegalStateException("Could not save resource " + resourcePath + " to " + outPath, e);
+            outputStream.close();
+            inputStream.close();
+            return true;
         }
 
         return false;
     }
 
+    public static boolean saveResource(String resourcePath, Path outPath, ClassLoader loader) throws IllegalStateException {
+        if (resourcePath == null || resourcePath.isEmpty()) {
+            return false;
+        }
+
+        resourcePath = resourcePath.replace('\\', '/');
+        InputStream inputStream = getResource(resourcePath, loader);
+        if (inputStream == null) {
+            return false;
+        }
+
+        try {
+            return saveResource(inputStream, outPath);
+        } catch (IOException e) {
+            throw new IllegalStateException("Could not save resource " + resourcePath + " to " + outPath, e);
+        }
+    }
 
     public static boolean saveResource(String resourcePath, Path outPath) throws IllegalStateException {
         return saveResource(resourcePath, outPath, ResourceUtils.class.getClassLoader());

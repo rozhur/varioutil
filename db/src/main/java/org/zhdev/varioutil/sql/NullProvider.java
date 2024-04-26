@@ -9,7 +9,6 @@ class NullProvider implements ConnectionProvider {
         this.message = message;
     }
 
-
     @Override
     public Connection getConnection() {
         throw new SqlException(message);

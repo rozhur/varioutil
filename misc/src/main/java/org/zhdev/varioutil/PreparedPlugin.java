@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.logging.Logger;
 
 public interface PreparedPlugin {
@@ -23,24 +24,33 @@ public interface PreparedPlugin {
 
     Path getDataDirectory();
 
-    default Path loadConfig(Config config, String pathname) {
+    default Path loadConfig(Config config, String pathname, boolean resourcePreload) {
         ClassLoader classLoader = getClass().getClassLoader();
-        InputStream stream = ResourceUtils.getResource(pathname, classLoader);
-        if (stream != null) {
-            config.load(stream);
-        }
+        Path path = Paths.get(pathname);
+        try (InputStream stream = ResourceUtils.getResource(pathname, classLoader)) {
+            if (stream != null) {
+                if (resourcePreload) {
+                    config.load(stream);
+                }
 
-        Path path = config.load(getDataDirectory().toString() + '/' + pathname);
-        try {
-            if (Files.notExists(path) || Files.size(path) == 0) {
-                if (ResourceUtils.saveResource(pathname, path, classLoader)) {
-                    config.load(path);
+                if (Files.notExists(path) || Files.size(path) == 0) {
+                    ResourceUtils.saveResource(stream, path);
                 }
             }
+
+            if (Files.exists(path)) config.load(path);
         } catch (IOException e) {
             throw new ConfigException(e);
         }
         return path;
+    }
+
+    default Path loadConfig(Config config, String pathname) {
+        return loadConfig(config, pathname, false);
+    }
+
+    default Path loadConfig(Config config, boolean resourcePreload) {
+        return loadConfig(config, config.getKey(), resourcePreload);
     }
 
     default Path loadConfig(Config config) {
