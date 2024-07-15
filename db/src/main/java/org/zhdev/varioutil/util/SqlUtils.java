@@ -24,10 +24,15 @@ public class SqlUtils {
 
     public static Connection createMysqlConnection(String address, String dbname, String username, String password, boolean ssl) throws SqlException {
         try {
-            if (!address.contains(":")) {
-                address = address + ":3306";
+            String[] addressParts = address.split(":", 2);
+            int port;
+            if (addressParts.length > 1) {
+                port = Integer.parseInt(encodeUrlValue(addressParts[1]));
+                address = addressParts[0];
+            } else {
+                port = 3306;
             }
-            return DriverManager.getConnection("jdbc:mysql://" + encodeUrlValue(address) + '/' + encodeUrlValue(dbname) + "?useSSL=" + ssl, username, password);
+            return DriverManager.getConnection("jdbc:mysql://" + encodeUrlValue(address) + ':' + port + '/' + encodeUrlValue(dbname) + "?useSSL=" + ssl, username, password);
         } catch (SQLException | UnsupportedEncodingException e) {
             throw new SqlException(e);
         }
