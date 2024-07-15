@@ -21,6 +21,13 @@
         <module>all</module>
     </modules>
 
+    <distributionManagement>
+        <repository>
+            <id>zhdev-repo</id>
+            <url>https://maven.zhdev.org/repository/</url>
+        </repository>
+    </distributionManagement>
+
     <build>
         <defaultGoal>install</defaultGoal>
         <resources>
@@ -107,9 +114,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
                 <version>2.7</version>
-                <configuration>
-                    <altDeploymentRepository>local::default::file:${project.basedir}/target/deploy</altDeploymentRepository>
-                </configuration>
                 <executions>
                     <execution>
                         <id>deploy</id>
