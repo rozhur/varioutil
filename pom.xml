@@ -23,8 +23,8 @@
 
     <distributionManagement>
         <repository>
-            <id>zhdev-repo</id>
-            <url>https://maven.zhdev.org/repository/</url>
+            <id>zhdev-dist</id>
+            <url>https://maven.zhdev.org/distribution/</url>
         </repository>
     </distributionManagement>
 
@@ -72,7 +72,7 @@
                         <phase>package</phase>
                         <goals>
                             <goal>shade</goal>
-                        </goals>
+                        </goals>repo
                     </execution>
                 </executions>
             </plugin>
