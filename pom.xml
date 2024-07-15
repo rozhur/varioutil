@@ -23,8 +23,8 @@
 
     <distributionManagement>
         <repository>
-            <id>zhdev-dist</id>
-            <url>https://maven.zhdev.org/distribution/</url>
+            <id>zhdev-repo</id>
+            <url>https://maven.zhdev.org/repository/</url>
         </repository>
     </distributionManagement>
 
