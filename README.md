@@ -1,3 +1,5 @@
+> Now at https://git.zhira.net/zhira/varioutil.
+
 ### Add as maven dependency
 ```xml
 <repositories>
