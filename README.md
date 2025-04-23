@@ -2,15 +2,15 @@
 ```xml
 <repositories>
     <repository>
-        <id>zhdev-repo</id>
-        <url>https://maven.zhdev.org/repository/</url>
+        <id>zhira-repo</id>
+        <url>https://maven.zhira.net/repository/</url>
     </repository>
 </repositories>
 ```
 ```xml
 <dependencies>
     <dependency>
-        <groupId>org.zhdev.varioutil</groupId>
+        <groupId>net.zhira.varioutil</groupId>
         <artifactId>all</artifactId>
         <version>1.0-SNAPSHOT</version>
     </dependency>
@@ -22,7 +22,7 @@
 ```xml
 <dependencies>
     <dependency>
-        <groupId>org.zhdev.varioutil</groupId>
+        <groupId>net.zhira.varioutil</groupId>
         <artifactId>common</artifactId>
         <version>1.0-SNAPSHOT</version>
     </dependency>
@@ -32,7 +32,7 @@
 ```java
 import java.lang.reflect.Field;
 
-import org.zhdev.varioutil.ReflectionUtils;
+import net.zhira.varioutil.ReflectionUtils;
 import org.bukkit.Bukkit;
 
 public class BukkitFields {
@@ -53,7 +53,7 @@ public class BukkitFields {
 ```xml
 <dependencies>
     <dependency>
-        <groupId>org.zhdev.varioutil</groupId>
+        <groupId>net.zhira.varioutil</groupId>
         <artifactId>io</artifactId>
         <version>1.0-SNAPSHOT</version>
     </dependency>
@@ -62,8 +62,8 @@ public class BukkitFields {
 #### Code
 
 ```java
-import org.zhdev.varioutil.Config;
-import org.zhdev.varioutil.YamlConfig;
+import net.zhira.varioutil.Config;
+import net.zhira.varioutil.YamlConfig;
 
 import java.util.List;
 
