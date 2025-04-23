@@ -32,7 +32,7 @@ public class SqlUtils {
             } else {
                 port = 3306;
             }
-            return DriverManager.getConnection("jdbc:mysql://" + encodeUrlValue(address) + ':' + port + '/' + encodeUrlValue(dbname) + "?useSSL=" + ssl, username, password);
+            return DriverManager.getConnection("jdbc:mysql://" + encodeUrlValue(address) + ':' + port + '/' + encodeUrlValue(dbname) + "?useSSL=" + ssl + "&autoReconnect=true", username, password);
         } catch (SQLException | UnsupportedEncodingException e) {
             throw new SqlException(e);
         }
