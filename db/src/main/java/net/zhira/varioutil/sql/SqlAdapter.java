@@ -86,5 +86,4 @@ public final class SqlAdapter implements AutoCloseable {
         }
         provider = ConnectionProvider.CLOSED;
     }
-
 }

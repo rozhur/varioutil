@@ -4,14 +4,19 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 abstract class AbstractProvider implements ConnectionProvider {
-    private final Connection connection;
+    private Connection connection;
 
-    AbstractProvider(Connection connection) {
-        this.connection = connection;
-    }
+    abstract Connection establishConnection();
 
     @Override
     public Connection getConnection() {
+        try {
+            if (connection == null || !connection.isValid(1)) {
+                connection = establishConnection();
+            }
+        } catch (SQLException e) {
+            throw new SqlException(e);
+        }
         return connection;
     }
 
