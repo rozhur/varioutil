@@ -23,7 +23,7 @@ abstract class AbstractProvider implements ConnectionProvider {
     @Override
     public boolean isClosed() {
         try {
-            return connection.isClosed();
+            return connection == null || connection.isClosed();
         } catch (SQLException e) {
             throw new SqlException(e);
         }
