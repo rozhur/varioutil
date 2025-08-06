@@ -2,8 +2,8 @@
 ```xml
 <repositories>
     <repository>
-        <id>zhira-repo</id>
-        <url>https://maven.zhira.net/repository/</url>
+        <id>zhdev-repo</id>
+        <url>https://maven.zhira.net/repository/zhdev/</url>
     </repository>
 </repositories>
 ```
