@@ -89,8 +89,8 @@ If you only need YAML parsing, just add the `io` maven dependency.
 ```
 #### Code
 ```java
-import org.zhdev.Config;
-import org.zhdev.YamlConfig;
+import org.zhdev.config.Config;
+import org.zhdev.config.YamlConfig;
 
 import java.util.List;
 
