@@ -1,4 +1,4 @@
-package org.zhdev.varioutil;
+package org.zhdev;
 
 import com.velocitypowered.api.proxy.ProxyServer;
 import org.slf4j.Logger;
@@ -26,9 +26,5 @@ public abstract class VelocityPlugin {
 
     public java.util.logging.Logger getLogger() {
         return java.util.logging.Logger.getLogger(logger.getName());
-    }
-
-    public Logger getSLF4JLogger() {
-        return logger;
     }
 }
