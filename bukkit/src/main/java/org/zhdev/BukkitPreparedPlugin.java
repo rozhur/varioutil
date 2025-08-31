@@ -1,8 +1,8 @@
-package org.zhdev.varioutil;
+package org.zhdev;
 
-import org.zhdev.varioutil.language.Language;
-import org.zhdev.varioutil.util.CollectionUtils;
-import org.zhdev.varioutil.util.ColorUtils;
+import org.zhdev.language.Language;
+import org.zhdev.util.CollectionUtils;
+import org.zhdev.util.ColorUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginIdentifiableCommand;
@@ -12,14 +12,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPluginLoader;
 import org.jetbrains.annotations.NotNull;
-import org.zhdev.varioutil.bukkit.command.PreparedPluginCommand;
-import org.zhdev.varioutil.config.BukkitYamlConfig;
-import org.zhdev.varioutil.config.Config;
-import org.zhdev.varioutil.config.ConfigSection;
-import org.zhdev.varioutil.config.YamlConfig;
-import org.zhdev.varioutil.sql.SqlAdapter;
-import org.zhdev.varioutil.util.BukkitUtils;
-import org.zhdev.varioutil.util.ConfigUtils;
+import org.zhdev.bukkit.command.PreparedPluginCommand;
+import org.zhdev.config.BukkitYamlConfig;
+import org.zhdev.config.Config;
+import org.zhdev.config.ConfigSection;
+import org.zhdev.config.YamlConfig;
+import org.zhdev.sql.SqlAdapter;
+import org.zhdev.util.BukkitUtils;
+import org.zhdev.util.ConfigUtils;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -138,11 +138,17 @@ public abstract class BukkitPreparedPlugin extends BukkitPlugin implements Liste
         sqlAdapter.setProvider(ConfigUtils.createSqlConnectionProvider(databaseConfig, getDataFolder().getPath()));
     }
 
-    protected void onLoading() {}
+    protected void onPreLoad() {}
 
-    protected void onEnabling() {}
+    protected void onPostLoad() {}
 
-    protected void onDisabling() {}
+    protected void onPreEnable() {}
+
+    protected void onPostEnable() {}
+
+    protected void onPreDisable() {}
+
+    protected void onPostDisable() {}
 
     private void load() {
         loadDefaultConfig();
@@ -152,8 +158,9 @@ public abstract class BukkitPreparedPlugin extends BukkitPlugin implements Liste
 
     @Override
     public final void onLoad() {
+        onPreLoad();
         load();
-        onLoading();
+        onPostLoad();
     }
 
     private void enable() {
@@ -162,8 +169,9 @@ public abstract class BukkitPreparedPlugin extends BukkitPlugin implements Liste
 
     @Override
     public final void onEnable() {
+        onPreEnable();
         enable();
-        onEnabling();
+        onPostEnable();
     }
 
     private void disable() {
@@ -180,11 +188,11 @@ public abstract class BukkitPreparedPlugin extends BukkitPlugin implements Liste
     @Override
     public final void onDisable() {
         try {
-            onDisabling();
+            onPreDisable();
             disable();
-        } catch (Exception e) {
+            onPostDisable();
+        } finally {
             disable();
-            throw e;
         }
     }
 

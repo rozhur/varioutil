@@ -1,17 +1,17 @@
-package org.zhdev.varioutil;
+package org.zhdev;
 
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.proxy.ProxyServer;
-import org.zhdev.varioutil.config.ConfigSection;
-import org.zhdev.varioutil.language.Language;
-import org.zhdev.varioutil.util.ColorUtils;
+import org.zhdev.config.ConfigSection;
+import org.zhdev.language.Language;
+import org.zhdev.util.ColorUtils;
 import org.slf4j.Logger;
-import org.zhdev.varioutil.config.Config;
-import org.zhdev.varioutil.config.VelocityTomlConfig;
-import org.zhdev.varioutil.sql.SqlAdapter;
-import org.zhdev.varioutil.util.ConfigUtils;
+import org.zhdev.config.Config;
+import org.zhdev.config.VelocityTomlConfig;
+import org.zhdev.sql.SqlAdapter;
+import org.zhdev.util.ConfigUtils;
 
 import java.nio.file.Path;
 
@@ -59,20 +59,26 @@ public abstract class VelocityPreparedPlugin extends VelocityPlugin implements P
         return sqlAdapter;
     }
 
-    protected void onEnabling() {}
+    protected void onPreEnable() {}
 
-    protected void onDisabling() {}
+    protected void onPostEnable() {}
+
+    protected void onPreDisable() {}
+
+    protected void onPostDisable() {}
 
     @Subscribe
     private void onProxyInitialization(ProxyInitializeEvent event) {
+        onPreEnable();
         loadConfig(defaultConfig);
         loadPhrases();
         establishSqlConnection();
-        onEnabling();
+        onPostEnable();
     }
 
     @Subscribe
     private void onProxyInitialization(ProxyShutdownEvent event) {
-        onDisabling();
+        onPreDisable();
+        onPostDisable();
     }
 }
