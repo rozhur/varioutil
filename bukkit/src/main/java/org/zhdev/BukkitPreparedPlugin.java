@@ -25,17 +25,12 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.logging.Level;
 
 public abstract class BukkitPreparedPlugin extends BukkitPlugin implements Listener, PreparedPlugin {
     protected final Path dataDirectory;
     protected final Config defaultConfig = new BukkitYamlConfig();
     protected final Language language = new Language();
     protected final SqlAdapter sqlAdapter = createSqlAdapter();
-
-    private ExecutorService singleThreadExecutor;
 
     public BukkitPreparedPlugin() {
         super();
@@ -178,10 +173,6 @@ public abstract class BukkitPreparedPlugin extends BukkitPlugin implements Liste
         closeSqlAdapter();
         defaultConfig.clear();
 
-        if (singleThreadExecutor != null) {
-            singleThreadExecutor.shutdownNow();
-        }
-
         BukkitUtils.unregisterCommandIf(command -> command instanceof PluginIdentifiableCommand && ((PluginIdentifiableCommand) command).getPlugin() == this);
     }
 
@@ -194,19 +185,5 @@ public abstract class BukkitPreparedPlugin extends BukkitPlugin implements Liste
         } finally {
             disable();
         }
-    }
-
-    public void runTaskSeparately(Runnable runnable) {
-        if (singleThreadExecutor == null) {
-            singleThreadExecutor = Executors.newSingleThreadExecutor();
-        }
-
-        singleThreadExecutor.execute(() -> {
-            try {
-                runnable.run();
-            } catch (Throwable throwable) {
-                getLogger().log(Level.SEVERE, "Unhandled exception while running separated task", throwable);
-            }
-        });
     }
 }
