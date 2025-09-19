@@ -54,7 +54,12 @@ class BukkitReflectionUtils {
     private static class ModernGameProfileConsumer implements GameProfileConsumer {
         private final Class<?> __ResolvableProfile_CLASS = ReflectionUtils.getType("net.minecraft.world.item.component.ResolvableProfile");
         private final Constructor<?> __ResolvableProfile_CONSTRUCTOR;
-        protected final Method __setProfile__CraftMetaSkull__METHOD = ReflectionUtils.getMethod(__ResolvableProfile_CLASS, "setProfile", __ResolvableProfile_CLASS);
+        protected final Method __setProfile__CraftMetaSkull__METHOD = ReflectionUtils.methodSearcher()
+                .type(__CraftMetaSkull__CLASS)
+                .methodOf("setProfile")
+                .parameters(__ResolvableProfile_CLASS)
+                .returns(void.class)
+                .search();
 
         ModernGameProfileConsumer() {
             Constructor<?> resolvableConstructor;
