@@ -5,7 +5,9 @@ import org.zhdev.reflection.MethodSearcher;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Enumeration;
 import java.util.function.Consumer;
@@ -23,6 +25,12 @@ public class ReflectionUtils {
         Field field = type.getDeclaredField(fieldName);
         field.setAccessible(true);
         return field;
+    }
+
+    private static Constructor<?> getConstructor0(Class<?> type, Class<?>... parameterTypes) throws NoSuchMethodException {
+        Constructor<?> constructor = type.getDeclaredConstructor(parameterTypes);
+        constructor.setAccessible(true);
+        return constructor;
     }
 
     private static boolean compareParameters(Class<?>[] required, Class<?>... parameters) {
@@ -171,6 +179,22 @@ public class ReflectionUtils {
             field.set(instance, value);
         } catch (IllegalAccessException e) {
             throw new IllegalStateException(e.getMessage());
+        }
+    }
+
+    public static Constructor<?> getConstructor(Class<?> type, Class<?>... parameterTypes) throws NoSuchMethodError {
+        try {
+            return getConstructor0(type, parameterTypes);
+        } catch (NoSuchMethodException e) {
+            throw new NoSuchMethodError(e.getMessage());
+        }
+    }
+
+    public static Object newInstance(Constructor<?> constructor, Object... args) throws NoSuchMethodError {
+        try {
+            return constructor.newInstance(args);
+        } catch (ReflectiveOperationException e) {
+            throw new IllegalStateException(e);
         }
     }
 
