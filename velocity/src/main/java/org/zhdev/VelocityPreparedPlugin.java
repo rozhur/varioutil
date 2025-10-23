@@ -28,6 +28,10 @@ public abstract class VelocityPreparedPlugin extends VelocityPlugin implements P
         return new SqlAdapter();
     }
 
+    protected void closeSqlAdapter() {
+        sqlAdapter.close();
+    }
+
     protected void loadPhrases() {
         ConfigSection languageSection = defaultConfig.getOrCreateSection("language");
         String locale = languageSection.getString("locale", "default");
@@ -80,5 +84,6 @@ public abstract class VelocityPreparedPlugin extends VelocityPlugin implements P
     private void onProxyInitialization(ProxyShutdownEvent event) {
         onPreDisable();
         onPostDisable();
+        closeSqlAdapter();
     }
 }
