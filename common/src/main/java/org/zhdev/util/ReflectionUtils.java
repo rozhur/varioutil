@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Enumeration;
 import java.util.function.Consumer;
@@ -31,20 +30,6 @@ public class ReflectionUtils {
         Constructor<?> constructor = type.getDeclaredConstructor(parameterTypes);
         constructor.setAccessible(true);
         return constructor;
-    }
-
-    private static boolean compareParameters(Class<?>[] required, Class<?>... parameters) {
-        if (required.length != parameters.length) {
-            return false;
-        }
-
-        for (int i = 0; i < required.length; i++) {
-            if (!parameters[i].isAssignableFrom(required[i])) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     private static Method checkMethodType(Method method, Class<?> requiredType) throws IllegalStateException {
@@ -113,16 +98,7 @@ public class ReflectionUtils {
                 return checkMethodType(getMethod0(type, methodName, parameterTypes), returnType);
             } catch (IllegalStateException e) {
                 exception = e;
-            } catch (NoSuchMethodException ignored) {
-            }
-        }
-
-        if (parameterTypes.length > 0) {
-            for (Method m : type.getDeclaredMethods()) {
-                if (compareParameters(parameterTypes, m.getParameterTypes())) {
-                    return checkMethodType(m, returnType);
-                }
-            }
+            } catch (NoSuchMethodException ignored) {}
         }
 
         if (exception != null) {
